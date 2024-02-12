@@ -1,5 +1,5 @@
 #calculator
-from replit import clear
+from os import system
 from art import logo
 def add(n1,n2):
   return n1+n2
@@ -33,13 +33,15 @@ def calculator():
     
     print(f"{num1}{operation_symbol}{num2} = {answer}")
     
-    choice = input(f"Type 'y' to continue calculating with {answer},or type 'n' to start new.: ").lower()
+    choice = input(f"Type 'y' to continue calculating with {answer},or type 'n' to start new or 'e' for exit.: ").lower()
     if choice == 'n':
       flag = False
-      clear()
+      system('cls')
       calculator()
     elif choice == 'y':
       num1 = answer
+    elif choice == 'e':
+      flag = False
     else:
       print('wrong choice,pick again')
       continue
