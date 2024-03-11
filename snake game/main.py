@@ -23,6 +23,19 @@ screen.onkey(snake.down,"Down")
 screen.onkey(snake.left,'Left')
 screen.onkey(snake.right,'Right')
 game_is_on = True
+
+#asks user input to continue or discontiue the game
+def continue_game():
+    u_choice = None
+    while u_choice not in ['yes', 'no']:
+        u_choice = screen.textinput(title='MENU', prompt='Do you want to play again? Please enter yes or no:')
+    if u_choice == 'yes':
+        return True
+    else:
+        return False
+    
+
+
 while game_is_on:
     screen.update()
     time.sleep(0.1)
@@ -36,17 +49,26 @@ while game_is_on:
     
     #Detecting collision with wall.
     if snake.head.xcor() > 280 or snake.head.xcor() < -300 or snake.head.ycor() < -280 or snake.head.ycor() > 280:
-        score.reset()
-        snake.reset()
+        if continue_game():
+            score.reset()
+            snake.reset()
+            screen.listen()
+        else:
+            game_is_on = False
 
     #Detect collision with tail
     for turtle in snake.turtles[1:]:
         
         if snake.head.distance(turtle) < 10:
             #if collison with nay segment in the tail:
-            score.reset()
-            snake.reset()
-            
+            if continue_game():
+                score.reset()
+                snake.reset()
+                screen.listen()
+            else:
+                game_is_on = False
+
+                
 
 
     
