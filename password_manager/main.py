@@ -5,10 +5,11 @@ from tkinter import messagebox
 #---------------------------- PASSWORD GENERATOR ------------------------------- #
 import random
 import pyperclip
+import json
 
 
 def password_generator():
-    password = ''
+   
     letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
@@ -32,25 +33,52 @@ def password_generator():
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def add_passwords():
-    email = email_entry.get()
+    email = email_entry.get() #getting the contents for entry usin get()
     website = website_entry.get()
     password = password_entry.get()
+    new_data = {website:          #converting the data into a json dict format ie dict(dict)
+                {
+                    "email":email,
+                    "password":password
+                }
+    }
 
-    if email=='' or password == '':
+    if email=='' or password == '':#checking if the password field is empty
         messagebox.showerror(message='please don\'t leave any field empty')
     
-    else:
-        confirm = messagebox.askokcancel(title=website,message=f'These are the details you have entered \nemail:{email}\npassword:{password}')
+    else:#password is not empty
+        try:
+            with open('./password_manager/password.json',mode='r') as file: #open a json file in read mode
+                data = json.load(file)  # try read or get the data from json file
+        except:
+            with open('./password_manager/password.json',mode='w') as file:
+                json.dump(new_data,file,indent=4) # if file is not found or no entries ie first time running create the file
+        else:
+            data.update(new_data)# if the json file exist then update the data read
 
-        if confirm:
-            with open('./password_manager/passwords',mode='+a') as file:
-                details = f"\n\nemail:{email}\nwebsite:{website}\npassword:{password}"
-                file.write(details)
-            website_entry.delete(0,END)
+            with open('./password_manager/password.json',mode='w') as file: # now update the data into json file
+                json.dump(data,file,indent=4)
+        finally:
+            website_entry.delete(0,END)# after saving or writing into json file clear the entries
             password_entry.delete(0,END)
 
-
+# ------------------------ SEARCH FUNCTION --------------------------- #
+def search_website():
+    website = website_entry.get()
     
+    try:
+        with open('./password_manager/password.json','r') as file:
+            data = json.load(file)     
+        website_data = data[website]
+    except KeyError:
+        messagebox.showerror(message='Website details not found',title='error')
+    except FileNotFoundError:
+        messagebox.showerror(message='No Data file found')
+    else:
+        email = website_data['email']
+        password = website_data['password']
+        messagebox.showinfo(title='info',message=f'email:{email}\npassword:{password}')
+
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -74,8 +102,8 @@ username_label.grid(row=2,column=0)
 password_label = CTkLabel(window,text='Password',text_color='#f1f1f1')
 password_label.grid(row=3,column=0)
 
-website_entry = CTkEntry(window,width=350)
-website_entry.grid(row=1,column=1,columnspan=2)
+website_entry = CTkEntry(window,width=210)
+website_entry.grid(row=1,column=1,columnspan=1)
 website_entry.focus()
 
 
@@ -88,6 +116,9 @@ password_entry.grid(row=3,column=1)
 
 generate_button = CTkButton(window,text='generate',command=password_generator)
 generate_button.grid(row=3,column=2)
+
+search_button = CTkButton(window,text='Search',command=search_website)
+search_button.grid(row=1,column=2)
 
 add_button = CTkButton(window,text='add',width=360,command=add_passwords)
 add_button.grid(row=4,column=1,columnspan=2)
