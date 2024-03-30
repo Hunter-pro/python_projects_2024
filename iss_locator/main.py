@@ -1,13 +1,22 @@
 import smtplib
+import string
 from turtle import pos
 import requests
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv('.env')
 
 MY_LAT = 17.385044 # Your latitude
 MY_LONG = 78.486671# Your longitude
 
+ISS_ENDPONT= os.getenv('iss_url')
+SUN_ENDPOINT = os.getenv('sun_url')
+
 def position():
-    response = requests.get(url="http://api.open-notify.org/iss-now.json")
+    response = requests.get(url=ISS_ENDPONT)
     response.raise_for_status()
     data = response.json()
 
@@ -27,7 +36,7 @@ def is_night():
         "formatted": 0,
     }
 
-    response = requests.get("https://api.sunrise-sunset.org/json", params=parameters)
+    response = requests.get(SUN_ENDPOINT, params=parameters)
     response.raise_for_status()
     data = response.json()
     sunrise = int(data["results"]["sunrise"].split("T")[1].split(":")[0])
