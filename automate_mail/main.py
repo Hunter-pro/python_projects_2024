@@ -23,8 +23,8 @@ for birthday in birthdays:
             letter_contents = contents.replace('[NAME]',birthday['name'])
         with smtplib.SMTP('smtp.gmail.com') as connection:
             connection.starttls()
-            connection.login(user=my_email,password=os.getenv('app_password'))
-            connection.sendmail(from_addr=my_email,to_addrs=birthday['email'],msg=f'subject:Happy Birthday\n\n {letter_contents}')
+            connection.login(user=my_email,password=os.getenv('app_password'))#type:ignore
+            connection.sendmail(from_addr=my_email,to_addrs=birthday['email'],msg=f'subject:Happy Birthday\n\n {letter_contents}')#type:ignore
 
 
 # 3. If step 2 is true, pick a random letter from letter templates and replace the [NAME] with the person's actual name from birthdays.csv

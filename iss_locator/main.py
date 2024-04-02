@@ -16,7 +16,7 @@ ISS_ENDPONT= os.getenv('iss_url')
 SUN_ENDPOINT = os.getenv('sun_url')
 
 def position():
-    response = requests.get(url=ISS_ENDPONT)
+    response = requests.get(url=ISS_ENDPONT) # type: ignore
     response.raise_for_status()
     data = response.json()
 
@@ -36,7 +36,7 @@ def is_night():
         "formatted": 0,
     }
 
-    response = requests.get(SUN_ENDPOINT, params=parameters)
+    response = requests.get(SUN_ENDPOINT, params=parameters) # type: ignore
     response.raise_for_status()
     data = response.json()
     sunrise = int(data["results"]["sunrise"].split("T")[1].split(":")[0])
