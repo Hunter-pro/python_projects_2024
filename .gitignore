@@ -1,6 +1,7 @@
 .vscode/settings.json
 # Created by https://www.toptal.com/developers/gitignore/api/python
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
+.vscode/*
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
